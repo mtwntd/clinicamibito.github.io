@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if servicio %}Modificar Servicio{% else %}Agregar Servicio{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    {% if servicio %}
+                    <h3><i class="bi bi-pencil-fill"></i> Modificar Servicio</h3>
+                    {% else %}
+                    <h3><i class="bi bi-plus-circle-fill"></i> Agregar Nuevo Servicio</h3>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    
+                    <form action="{% if servicio %}{% url 'admin_modificar_servicio' servicio.id %}{% else %}{% url 'admin_crear_servicio' %}{% endif %}" method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre del Servicio (*)</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" 
+                                   value="{% if form_data.nombre %}{{ form_data.nombre }}{% elif servicio %}{{ servicio.nombre }}{% endif %}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="descripcion" name="descripcion" 
+                                      rows="3">{% if form_data.descripcion %}{{ form_data.descripcion }}{% elif servicio %}{{ servicio.descripcion }}{% endif %}</textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="precio" class="form-label">Precio (*)</label>
+                                <input type="number" class="form-control" id="precio" name="precio" 
+                                       value="{% if form_data.precio %}{{ form_data.precio }}{% elif servicio %}{{ servicio.precio }}{% else %}0{% endif %}" min="0" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="duracion_estimada" class="form-label">Duración Estimada</label>
+                                <input type="text" class="form-control" id="duracion_estimada" name="duracion_estimada" 
+                                       value="{% if form_data.duracion_estimada %}{{ form_data.duracion_estimada }}{% elif servicio %}{{ servicio.duracion_estimada }}{% endif %}" placeholder="Ej: 45 minutos">
+                            </div>
+                        </div>
+
+                        <hr>
+                        
+                        <div class="d-flex justify-content-end">
+                            <a href="{% url 'admin_lista_servicios' %}" class="btn btn-secondary me-2">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">
+                                {% if servicio %}Guardar Cambios{% else %}Guardar Servicio{% endif %}
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

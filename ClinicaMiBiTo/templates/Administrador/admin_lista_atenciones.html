@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block title %}Gestión de Atenciones{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <ul class="nav nav-tabs nav-fill mb-3">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard_admin' %}">
+                <i class="bi bi-box-seam-fill"></i> Gestión de Productos
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin_lista_proveedores' %}">
+                <i class="bi bi-truck-flatbed"></i> Gestión de Proveedores
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin_lista_colaboradores' %}">
+                <i class="bi bi-person-badge-fill"></i> Gestión de Colaboradores
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin_lista_clientes' %}">
+                <i class="bi bi-people-fill"></i> Gestión de Clientes
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin_lista_servicios' %}">
+                <i class="bi bi-scissors"></i> Gestión de Servicios
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'admin_lista_atenciones' %}">
+                <i class="bi bi-calendar-check-fill"></i> Gestión de Atenciones
+            </a>
+        </li>
+    </ul>
+    <div class="d-flex justify-content-between align-items-center mb-3 pt-3">
+        <h2><i class="bi bi-calendar-check-fill"></i> Historial de Todas las Atenciones</h2>
+        </div>
+    <hr>
+
+    <table class="table table-striped table-hover shadow-sm">
+        <thead class="table-light">
+            <tr>
+                <th>Fecha / Hora</th>
+                <th>Cliente</th>
+                <th>Estilista</th>
+                <th>Total Calculado</th>
+                <th>Estado</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for atencion in atenciones %}
+            <tr>
+                <td>{{ atencion.fecha_hora|date:"d/m/Y H:i" }}</td>
+                <td>{{ atencion.cliente.nombre }}</td>
+                <td>{{ atencion.estilista.user.username }}</td>
+                <td>${{ atencion.precio_final|floatformat:0 }}</td>
+                <td>
+                    {% if atencion.precio_final > 0 %}
+                        <span class="badge bg-success">Finalizada</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">Pendiente</span>
+                    {% endif %}
+                </td>
+                
+                <td>
+                    {% if atencion.precio_final == 0 %}
+                        <a href="{% url 'admin_detalle_atencion' atencion.id %}" class="btn btn-primary btn-sm">
+                            <i class="bi bi-pencil-fill"></i> Continuar
+                        </a>
+                        <a href="{% url 'estilista_cancelar_atencion' atencion.id %}" 
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('¿Estás seguro de que deseas CANCELAR esta atención pendiente? Se borrará permanentemente.')">
+                           <i class="bi bi-x-circle-fill"></i> Cancelar
+                        </a>
+                    {% else %}
+                        <span class="text-muted">Completada</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No hay atenciones registradas en el sistema.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+</div>
+{% endblock %}

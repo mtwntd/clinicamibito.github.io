@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Caja - Cobros Pendientes{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4"><i class="bi bi-cash-coin"></i> Caja: Cobros Pendientes</h2>
+    
+    <div class="alert alert-info">
+        Aquí aparecen las atenciones finalizadas por los estilistas que aún no han pagado.
+    </div>
+
+    <table class="table table-hover shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Estilista</th>
+                <th>Total a Pagar</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for atencion in atenciones %}
+            <tr>
+                <td>{{ atencion.fecha_hora|date:"d/m/Y H:i" }}</td>
+                <td>{{ atencion.cliente.nombre }}</td>
+                <td>{{ atencion.estilista.user.first_name }}</td>
+                <td class="fw-bold text-success">${{ atencion.precio_final|floatformat:0 }}</td>
+                <td>
+                    <a href="{% url 'recepcionista_confirmar_pago' atencion.id %}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-credit-card"></i> Cobrar
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">No hay cobros pendientes.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'dashboard_recepcionista' %}" class="btn btn-secondary mt-3">Volver al Panel</a>
+</div>
+{% endblock %}

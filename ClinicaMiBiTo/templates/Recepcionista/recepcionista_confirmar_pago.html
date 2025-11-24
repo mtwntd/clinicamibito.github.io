@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Confirmar Pago{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>Confirmar Pago</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="text-center mb-4">Total a Pagar: <span class="display-6 text-success">${{ atencion.precio_final|floatformat:0 }}</span></h5>
+                    
+                    <p><strong>Cliente:</strong> {{ atencion.cliente.nombre }}</p>
+                    <hr>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Seleccione Método:</label>
+                            
+                            <div class="form-check p-3 border rounded mb-2">
+                                <input class="form-check-input" type="radio" name="metodo_pago" id="pago_efectivo" value="efectivo" onclick="mostrarOpciones('efectivo')" checked>
+                                <label class="form-check-label w-100" for="pago_efectivo">
+                                    <i class="bi bi-cash-coin me-2"></i> Efectivo
+                                </label>
+                            </div>
+
+                            <div class="form-check p-3 border rounded mb-2">
+                                <input class="form-check-input" type="radio" name="metodo_pago" id="pago_tarjeta" value="tarjeta" onclick="mostrarOpciones('digital')">
+                                <label class="form-check-label w-100" for="pago_tarjeta">
+                                    <i class="bi bi-credit-card-2-front me-2"></i> Tarjeta Débito / Crédito
+                                </label>
+                            </div>
+
+                            <div class="form-check p-3 border rounded mb-2">
+                                <input class="form-check-input" type="radio" name="metodo_pago" id="pago_transferencia" value="transferencia" onclick="mostrarOpciones('digital')">
+                                <label class="form-check-label w-100" for="pago_transferencia">
+                                    <i class="bi bi-bank me-2"></i> Transferencia Bancaria
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="div_efectivo" class="mb-3 bg-light p-3 rounded">
+                            <label for="monto_efectivo" class="form-label">Dinero Recibido:</label>
+                            <input type="number" class="form-control" id="monto_efectivo" name="monto_efectivo" placeholder="Ej: 20000">
+                            <div class="form-text">Ingrese cuánto dinero entregó el cliente.</div>
+                        </div>
+
+                        <div id="div_digital" class="mb-3 bg-light p-3 rounded" style="display: none;">
+                            <label for="codigo_transaccion" class="form-label">Código de Operación / Voucher:</label>
+                            <input type="text" class="form-control" id="codigo_transaccion" name="codigo_transaccion" placeholder="Ej: 123456789">
+                            <div class="form-text">Ingrese el número de comprobante para respaldo.</div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">Pagar y Generar Boleta</button>
+                            <a href="{% url 'recepcionista_lista_cobros' %}" class="btn btn-outline-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function mostrarOpciones(tipo) {
+        if (tipo === 'efectivo') {
+            document.getElementById('div_efectivo').style.display = 'block';
+            document.getElementById('div_digital').style.display = 'none';
+            document.getElementById('monto_efectivo').required = true;
+            document.getElementById('codigo_transaccion').required = false;
+        } else {
+            document.getElementById('div_efectivo').style.display = 'none';
+            document.getElementById('div_digital').style.display = 'block';
+            document.getElementById('monto_efectivo').required = false;
+            document.getElementById('codigo_transaccion').required = true;
+        }
+    }
+</script>
+{% endblock %}

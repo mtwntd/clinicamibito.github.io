@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Productos Bajo Mínimos{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-danger"><i class="bi bi-exclamation-triangle-fill"></i> Alerta: Productos Bajo Mínimos</h2>
+    <p>Estos productos están en o por debajo de su stock de alerta.</p>
+    <hr>
+    
+    <table class="table table-danger table-bordered shadow-sm">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Stock Actual</th>
+                <th>Stock Mínimo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+            <tr>
+                <td><strong>{{ producto.nombre }}</strong></td>
+                <td><strong>{{ producto.stock_actual }} unidades</strong></td>
+                <td>{{ producto.stock_minimo }} unidades</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="text-center">¡Genial! No hay productos bajo el stock mínimo.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <a href="{% url 'dashboard_estilista' %}" class="btn btn-secondary mt-3">Volver al Panel</a>
+</div>
+{% endblock %}

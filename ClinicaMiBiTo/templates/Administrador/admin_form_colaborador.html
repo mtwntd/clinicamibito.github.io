@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if colaborador %}Modificar Colaborador{% else %}Agregar Colaborador{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    {% if colaborador %}
+                    <h3><i class="bi bi-pencil-fill"></i> Modificar Colaborador</h3>
+                    {% else %}
+                    <h3><i class="bi bi-person-plus-fill"></i> Agregar Nuevo Colaborador</h3>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    
+                    <form action="{% if colaborador %}{% url 'admin_modificar_colaborador' colaborador.user.id %}{% else %}{% url 'admin_crear_colaborador' %}{% endif %}" method="POST">
+                        {% csrf_token %}
+                        
+                        <h5 class="text-primary">Datos de Inicio de Sesión (User)</h5>
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="username" class="form-label">Username (para login) (*)</label>
+                                <input type="text" class="form-control" id="username" name="username" 
+                                       value="{% if form_data.username %}{{ form_data.username }}{% elif colaborador %}{{ colaborador.user.username }}{% endif %}" 
+                                       {% if colaborador %}readonly{% else %}required{% endif %}>
+                                {% if colaborador %}
+                                <div class="form-text">El username no se puede modificar.</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="password" class="form-label">Contraseña (*)</label>
+                                <input type="password" class="form-control" id="password" name="password" 
+                                       {% if not colaborador %}required{% endif %}>
+                                {% if colaborador %}
+                                <div class="form-text">Dejar en blanco para no cambiar la contraseña.</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   value="{% if form_data.email %}{{ form_data.email }}{% elif colaborador %}{{ colaborador.user.email }}{% endif %}">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="first_name" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" 
+                                       value="{% if form_data.first_name %}{{ form_data.first_name }}{% elif colaborador %}{{ colaborador.user.first_name }}{% endif %}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="last_name" class="form-label">Apellido</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" 
+                                       value="{% if form_data.last_name %}{{ form_data.last_name }}{% elif colaborador %}{{ colaborador.user.last_name }}{% endif %}">
+                            </div>
+                        </div>
+
+
+                        <h5 class="text-primary mt-4">Datos del Puesto (Colaborador)</h5>
+                        <hr>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="rol" class="form-label">Rol (*)</label>
+                                <select class="form-select" id="rol" name="rol" required>
+                                    <option value="" {% if not form_data.rol and not colaborador %}selected{% endif %} disabled>-- Elegir Rol --</option>
+                                    
+                                    <option value="admin" 
+                                            {% if form_data.rol == 'admin' %}selected
+                                            {% elif colaborador and colaborador.rol == 'admin' %}selected
+                                            {% endif %}>Administrador</option>
+                                    
+                                    <option value="estilista" 
+                                            {% if form_data.rol == 'estilista' %}selected
+                                            {% elif colaborador and colaborador.rol == 'estilista' %}selected
+                                            {% endif %}>Estilista</option>
+
+                                    <option value="recepcionista" 
+                                            {% if form_data.rol == 'recepcionista' %}selected
+                                            {% elif colaborador and colaborador.rol == 'recepcionista' %}selected
+                                            {% endif %}>Recepcionista</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="rut" class="form-label">RUT</label>
+                                <input type="text" class="form-control" id="rut" name="rut" 
+                                       value="{% if form_data.rut %}{{ form_data.rut }}{% elif colaborador %}{{ colaborador.rut }}{% endif %}">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="sueldo" class="form-label">Sueldo</label>
+                                <input type="number" class="form-control" id="sueldo" name="sueldo" 
+                                       value="{% if form_data.sueldo %}{{ form_data.sueldo }}{% elif colaborador %}{{ colaborador.sueldo }}{% else %}0{% endif %}" min="0">
+                            </div>
+                        </div>
+
+                        <hr>
+                        
+                        <div class="d-flex justify-content-end">
+                            <a href="{% url 'admin_lista_colaboradores' %}" class="btn btn-secondary me-2">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">
+                                {% if colaborador %}Guardar Cambios{% else %}Guardar Colaborador{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

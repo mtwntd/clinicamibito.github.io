@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Mis Atenciones{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2><i class="bi bi-calendar-check"></i> Historial de Mis Atenciones</h2>
+    <hr>
+
+    <table class="table table-striped table-hover shadow-sm">
+        <thead class="table-light">
+            <tr>
+                <th>Fecha / Hora</th>
+                <th>Cliente</th>
+                <th>Total Calculado</th>
+                <th>Estado</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for atencion in atenciones %}
+            <tr>
+                <td>{{ atencion.fecha_hora|date:"d/m/Y H:i" }}</td>
+                <td>{{ atencion.cliente.nombre }}</td>
+                <td>${{ atencion.precio_final|floatformat:0 }}</td>
+                <td>
+                    {% if atencion.precio_final > 0 %}
+                        <span class="badge bg-success">Finalizada</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">Pendiente</span>
+                    {% endif %}
+                </td>
+                
+                <td>
+                    {% if atencion.precio_final == 0 %}
+                        
+                        <a href="{% url 'estilista_detalle_atencion' atencion.id %}" class="btn btn-primary btn-sm">
+                            <i class="bi bi-pencil-fill"></i> Continuar
+                        </a>
+                        
+                        <a href="{% url 'estilista_cancelar_atencion' atencion.id %}" 
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('¿Estás seguro de que deseas CANCELAR esta atención pendiente? Se borrará permanentemente.')">
+                           <i class="bi bi-x-circle-fill"></i> Cancelar
+                        </a>
+
+                    {% else %}
+                        <span class="text-muted">Completada</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">No tienes atenciones registradas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <a href="{% url 'dashboard_estilista' %}" class="btn btn-secondary mt-3">Volver al Panel</a>
+</div>
+{% endblock %}

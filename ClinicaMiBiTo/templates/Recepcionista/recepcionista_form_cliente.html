@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if cliente %}Modificar Cliente{% else %}Crear Cliente{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    {% if cliente %}
+                    <h3><i class="bi bi-pencil-fill"></i> Modificar Cliente</h3>
+                    {% else %}
+                    <h3><i class="bi bi-person-plus-fill"></i> Dar de Alta Nuevo Cliente</h3>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    
+                    {% if user.colaborador.rol == 'admin' %}
+                        <form action="{% if cliente %}{% url 'admin_modificar_cliente' cliente.id %}{% else %}{% url 'admin_crear_cliente' %}{% endif %}" method="POST">
+                    {% else %}
+                        <form action="{% if cliente %}{% url 'recepcionista_modificar_cliente' cliente.id %}{% else %}{% url 'recepcionista_crear_cliente' %}{% endif %}" method="POST">
+                    {% endif %}
+                        
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre Completo (*)</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" 
+                                   value="{% if form_data.nombre %}{{ form_data.nombre }}{% elif cliente %}{{ cliente.nombre }}{% endif %}" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="rut" class="form-label">RUT</label> <input type="text" class="form-control" id="rut" name="rut" 
+                                       value="{% if form_data.rut %}{{ form_data.rut }}{% elif cliente %}{{ cliente.rut }}{% endif %}" placeholder="Ej: 12345678-9">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento (*)</label>
+                                <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" 
+                                       value="{% if form_data.fecha_nacimiento %}{{ form_data.fecha_nacimiento }}{% elif cliente %}{{ cliente.fecha_nacimiento|date:'Y-m-d' }}{% endif %}" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="telefono" class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" id="telefono" name="telefono" 
+                                       value="{% if form_data.telefono %}{{ form_data.telefono }}{% elif cliente %}{{ cliente.telefono }}{% endif %}" placeholder="Ej: +569...">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" 
+                                       value="{% if form_data.email %}{{ form_data.email }}{% elif cliente %}{{ cliente.email }}{% endif %}" placeholder="Ej: correo@dominio.com">
+                            </div>
+                        </div>
+
+                        <hr>
+                        
+                        <div class="d-flex justify-content-end">
+                            {% if user.colaborador.rol == 'admin' %}
+                                <a href="{% url 'admin_lista_clientes' %}" class="btn btn-secondary me-2">Cancelar</a>
+                            {% else %}
+                                <a href="{% url 'dashboard_recepcionista' %}" class="btn btn-secondary me-2">Cancelar</a>
+                            {% endif %}
+                            
+                            <button type="submit" class="btn btn-primary">
+                                {% if cliente %}Guardar Cambios{% else %}Guardar Cliente{% endif %}
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if proveedor %}Modificar Proveedor{% else %}Agregar Proveedor{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    {% if proveedor %}
+                    <h3><i class="bi bi-pencil-fill"></i> Modificar Proveedor</h3>
+                    {% else %}
+                    <h3><i class="bi bi-plus-circle-fill"></i> Agregar Nuevo Proveedor</h3>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    
+                    <form action="{% if proveedor %}{% url 'admin_modificar_proveedor' proveedor.id %}{% else %}{% url 'admin_crear_proveedor' %}{% endif %}" method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre del Proveedor (*)</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" 
+                                   value="{% if form_data.nombre %}{{ form_data.nombre }}{% elif proveedor %}{{ proveedor.nombre }}{% endif %}" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="contacto_nombre" class="form-label">Nombre del Contacto</label>
+                                <input type="text" class="form-control" id="contacto_nombre" name="contacto_nombre" 
+                                       value="{% if form_data.contacto_nombre %}{{ form_data.contacto_nombre }}{% elif proveedor %}{{ proveedor.contacto_nombre }}{% endif %}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="contacto_telefono" class="form-label">Teléfono del Contacto</label>
+                                <input type="tel" class="form-control" id="contacto_telefono" name="contacto_telefono" 
+                                       value="{% if form_data.contacto_telefono %}{{ form_data.contacto_telefono }}{% elif proveedor %}{{ proveedor.contacto_telefono }}{% endif %}">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="contacto_email" class="form-label">Email del Contacto</label>
+                            <input type="email" class="form-control" id="contacto_email" name="contacto_email" 
+                                   value="{% if form_data.contacto_email %}{{ form_data.contacto_email }}{% elif proveedor %}{{ proveedor.contacto_email }}{% endif %}">
+                        </div>
+
+                        <hr>
+                        
+                        <div class="d-flex justify-content-end">
+                            <a href="{% url 'admin_lista_proveedores' %}" class="btn btn-secondary me-2">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">
+                                {% if proveedor %}Guardar Cambios{% else %}Guardar Proveedor{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

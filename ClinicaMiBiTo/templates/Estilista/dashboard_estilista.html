@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Panel Estilista{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    
+    <div class="row">
+        <div class="col-12">
+            <h2>Panel del Estilista</h2>
+            <hr>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Panel de Atención</h5>
+                    <p class="card-text">Busca un cliente para iniciar una nueva atención, registrar servicios y productos consumidos.</p>
+                    
+                    <form action="{% url 'estilista_buscar_cliente' %}" method="GET" class="d-flex">
+                        <input type="text" name="q" class="form-control me-2" placeholder="Buscar cliente por RUT o Nombre...">
+                        <button type="submit" class="btn btn-primary">Buscar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    Tareas Rápidas
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <a href="{% url 'estilista_lista_productos' %}">Consultar Inventario</a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="{% url 'estilista_lista_bajominimos' %}" class="text-danger">Ver Productos Bajo Mínimos</a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="{% url 'estilista_mis_atenciones' %}">Ver mis atenciones</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

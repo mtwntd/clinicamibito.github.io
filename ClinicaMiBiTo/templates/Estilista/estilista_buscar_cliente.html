@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Buscar Cliente{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2><i class="bi bi-person-search"></i> Buscar Cliente para Atención</h2>
+    <hr>
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            
+            <form action="{% url 'estilista_buscar_cliente' %}" method="GET" class="d-flex mb-4">
+                <input type="text" name="q" class="form-control form-control-lg me-2" 
+                       placeholder="Buscar por RUT o Nombre..." value="{{ query }}">
+                <button type="submit" class="btn btn-primary btn-lg">Buscar</button>
+            </form>
+
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    Resultados de la búsqueda para: "<strong>{{ query }}</strong>"
+                </div>
+                <ul class="list-group list-group-flush">
+                    
+                    {% for cliente in clientes %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-0">{{ cliente.nombre }}</h5>
+                            <small class="text-muted">RUT: {{ cliente.rut|default:'No ingresado' }} | Tel: {{ cliente.telefono|default:'N/A' }}</small>
+                        </div>
+                        
+                        <a href="{% url 'estilista_crear_atencion' cliente.id %}" class="btn btn-success">
+                            Seleccionar <i class="bi bi-arrow-right-circle"></i>
+                        </a>
+                        
+                    </li>
+                    {% empty %}
+                        {% endfor %}
+                
+                </ul>
+            </div>
+
+            <a href="{% url 'dashboard_estilista' %}" class="btn btn-secondary mt-3">Volver al Panel</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if producto %}Modificar Producto{% else %}Agregar Producto{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    {% if producto %}
+                    <h3><i class="bi bi-pencil-fill"></i> Modificar Producto</h3>
+                    {% else %}
+                    <h3><i class="bi bi-plus-circle-fill"></i> Agregar Nuevo Producto </h3>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    
+                    <form action="{% if producto %}{% url 'admin_modificar_producto' producto.id %}{% else %}{% url 'admin_crear_producto' %}{% endif %}" method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre del Producto (*)</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" 
+                                   value="{% if form_data.nombre %}{{ form_data.nombre }}{% elif producto %}{{ producto.nombre }}{% endif %}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="descripcion" name="descripcion" 
+                                      rows="3">{% if form_data.descripcion %}{{ form_data.descripcion }}{% elif producto %}{{ producto.descripcion }}{% endif %}</textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="precio_costo" class="form-label">Precio Costo</label>
+                                <input type="number" class="form-control" id="precio_costo" name="precio_costo" 
+                                       value="{% if form_data.precio_costo %}{{ form_data.precio_costo }}{% elif producto %}{{ producto.precio_costo }}{% else %}0{% endif %}" min="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="precio_venta" class="form-label">Precio Venta (*)</label>
+                                <input type="number" class="form-control" id="precio_venta" name="precio_venta" 
+                                       value="{% if form_data.precio_venta %}{{ form_data.precio_venta }}{% elif producto %}{{ producto.precio_venta }}{% else %}0{% endif %}" min="0" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="stock_actual" class="form-label">Stock Actual (*)</label>
+                                <input type="number" class="form-control" id="stock_actual" name="stock_actual" 
+                                       value="{% if form_data.stock_actual %}{{ form_data.stock_actual }}{% elif producto %}{{ producto.stock_actual }}{% else %}0{% endif %}" min="0" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="stock_minimo" class="form-label">Stock Mínimo (*)</label>
+                                <input type="number" class="form-control" id="stock_minimo" name="stock_minimo" 
+                                       value="{% if form_data.stock_minimo %}{{ form_data.stock_minimo }}{% elif producto %}{{ producto.stock_minimo }}{% else %}5{% endif %}" min="0" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="proveedor_id" class="form-label">Proveedor </label>
+                            <select class="form-select" id="proveedor_id" name="proveedor_id">
+                                <option value="">-- Sin Proveedor --</option>
+                                {% for proveedor in proveedores %}
+                                <option value="{{ proveedor.id }}" 
+                                        {% if form_data.proveedor_id == proveedor.id|stringformat:"i" %}selected
+                                        {% elif producto and producto.proveedor.id == proveedor.id %}selected
+                                        {% endif %}>
+                                    {{ proveedor.nombre }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <hr>
+                        
+                        <div class="d-flex justify-content-end">
+                            <a href="{% url 'dashboard_admin' %}" class="btn btn-secondary me-2">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">
+                                {% if producto %}Guardar Cambios{% else %}Guardar Producto{% endif %}
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

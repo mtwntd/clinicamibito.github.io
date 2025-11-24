@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}Detalle de Atención (Admin){% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    
+    {% if aplica_descuento %}
+    <div class="alert alert-success shadow" role="alert">
+        <h4 class="alert-heading"><i class="bi bi-gift-fill"></i> ¡Cliente de Cumpleaños!</h4>
+        <p>Se aplicará un <strong>20% de descuento</strong> automático al total de esta atención.</p>
+    </div>
+    {% endif %}
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header fs-5">
+            Atención para: <strong>{{ cliente.nombre }}</strong> (Estilista: {{ atencion.estilista.user.username }})
+        </div>
+        <div class="card-body">
+            <p class="card-text"><strong>RUT:</strong> {{ cliente.rut }}</p>
+            <p class="card-text"><strong>Fecha Atención:</strong> {{ atencion.fecha_hora|date:"d/m/Y H:i" }}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-5">
+            <div class="card mb-4">
+                <div class="card-header">Añadir Servicio</div>
+                <div class="card-body">
+                    <form action="{% url 'admin_detalle_atencion' atencion.id %}" method="POST">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <select name="servicio_id" class="form-select" required>
+                                <option value="" selected disabled>-- Selecciona un servicio --</option>
+                                {% for servicio in servicios_disponibles %}
+                                <option value="{{ servicio.id }}">{{ servicio.nombre }} (${{ servicio.precio|floatformat:0 }})</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" name="accion" value="add_servicio" class="btn btn-primary">Añadir</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Añadir Producto Consumido</div>
+                <div class="card-body">
+                    <form action="{% url 'admin_detalle_atencion' atencion.id %}" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Producto:</label>
+                            <select name="producto_id" class="form-select" required>
+                                <option value="" selected disabled>-- Selecciona un producto --</option>
+                                {% for producto in productos_disponibles %}
+                                <option value="{{ producto.id }}">{{ producto.nombre }} (Stock: {{ producto.stock_actual }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cantidad:</label>
+                            <input type="number" name="cantidad" class="form-control" value="1" min="1" required>
+                        </div>
+                        <button type="submit" name="accion" value="add_producto" class="btn btn-primary">Añadir</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <h4>Resumen de Atención</h4>
+            
+            <div class="card">
+                <div class="card-header">Servicios Añadidos</div>
+                <ul class="list-group list-group-flush">
+                    {% for servicio in servicios_en_atencion %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>{{ servicio.nombre }}</span>
+                        <strong>${{ servicio.precio|floatformat:0 }}</strong>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-muted">Aún no se añaden servicios.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">Productos Consumidos</div>
+                <ul class="list-group list-group-flush">
+                    {% for item in productos_en_atencion %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>{{ item.cantidad }} x {{ item.producto.nombre }}</span>
+                        <strong>${{ item.producto.precio_venta|floatformat:0 }} (c/u)</strong>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-muted">Aún no se añaden productos.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
+                <a href="{% url 'estilista_finalizar_atencion' atencion.id %}" 
+                   class="btn btn-success btn-lg" 
+                   onclick="return confirm('¿Estás seguro de que deseas finalizar esta atención? Se calculará el total y se cerrará.')">
+                   Finalizar y Calcular Total
+                </a>
+                
+                <a href="{% url 'admin_lista_atenciones' %}" class="btn btn-outline-secondary">
+                    Volver al Panel (sin finalizar)
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% block title %}Boleta Electrónica{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg mx-auto" style="max-width: 500px;">
+        <div class="card-header bg-white text-center border-0 pt-4">
+            <h4>CLÍNICA ESTÉTICA MIBITO</h4>
+            <p class="text-muted mb-0">RUT: 76.123.456-K</p>
+            <p class="text-muted">Av. Principal 1234, Santiago</p>
+            <hr class="border-dark border-2 opacity-100">
+            <h5>BOLETA DE VENTA</h5>
+            <p class="mb-0">Folio: #000{{ atencion.id }}</p>
+            
+            <p class="mb-0">Fecha de Atención: {{ atencion.fecha_hora|date:"d/m/Y H:i" }}</p>
+            <p>Forma de Pago: <strong>{{ atencion.get_metodo_pago_display|upper }}</strong></p>
+        </div>
+        
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-12">
+                    <strong>Cliente:</strong> {{ atencion.cliente.nombre }}<br>
+                    <strong>Atendido por:</strong> {{ atencion.estilista.user.first_name }}
+                </div>
+            </div>
+
+            <table class="table table-sm table-borderless">
+                <thead class="border-bottom">
+                    <tr>
+                        <th>Detalle</th>
+                        <th class="text-end">Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for servicio in servicios %}
+                    <tr>
+                        <td>{{ servicio.nombre }}</td>
+                        <td class="text-end">${{ servicio.precio|floatformat:0 }}</td>
+                    </tr>
+                    {% endfor %}
+                    
+                    {% for item in productos %}
+                    <tr>
+                        <td>{{ item.cantidad }} x {{ item.producto.nombre }}</td>
+                        <td class="text-end">${{ item.producto.precio_venta|floatformat:0 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot class="border-top border-dark border-2">
+                    {% if atencion.descuento_cumpleanos %}
+                    <tr>
+                        <td class="text-success">Descuento Cumpleaños (20%)</td>
+                        <td class="text-end text-success">- Aplicado</td>
+                    </tr>
+                    {% endif %}
+                    
+                    <tr>
+                        <td class="fs-4 fw-bold">TOTAL</td>
+                        <td class="fs-4 fw-bold text-end">${{ atencion.precio_final|floatformat:0 }}</td>
+                    </tr>
+                    
+                    <tr class="text-muted small">
+                        <td colspan="2" class="pt-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Método Pago:</span>
+                                <span>{{ atencion.get_metodo_pago_display|upper }}</span>
+                            </div>
+                            
+                            {% if atencion.metodo_pago == 'efectivo' %}
+                            <div class="d-flex justify-content-between">
+                                <span>Efectivo Recibido:</span>
+                                <span>${{ atencion.monto_pagado|floatformat:0 }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between fw-bold text-dark">
+                                <span>VUELTO:</span>
+                                <span>${{ atencion.vuelto|floatformat:0 }}</span>
+                            </div>
+                            {% else %}
+                            <div class="d-flex justify-content-between">
+                                <span>Cód. Operación:</span>
+                                <span>{{ atencion.codigo_transaccion }}</span>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+            
+            <div class="text-center mt-4">
+                <p class="fw-bold text-uppercase border p-2 d-inline-block">PAGADO</p>
+            </div>
+        </div>
+        
+        <div class="card-footer text-center bg-white pb-4 border-0">
+            <p class="small text-muted">¡Gracias por su preferencia!</p>
+            <button onclick="window.print()" class="btn btn-outline-primary btn-sm no-print">
+                <i class="bi bi-printer"></i> Imprimir
+            </button>
+            <a href="{% url 'recepcionista_lista_cobros' %}" class="btn btn-dark btn-sm no-print">Volver a Caja</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    @media print {
+        .no-print, nav, footer { display: none !important; }
+        body { background: white; }
+        .card { box-shadow: none !important; border: none !important; }
+    }
+</style>
+{% endblock %}

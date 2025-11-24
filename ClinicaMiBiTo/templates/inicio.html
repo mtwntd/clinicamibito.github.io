@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+    <section class="tratamientos text-center">
+        <h2 class="mb-4">¿Qué tipo de tratamiento buscas?</h2>
+
+        <div class="row">
+            <div class="col-6 col-md-3 mb-4">
+                <a href="{% url 'tratamientos_esteticos' %}" class="card h-100 shadow-sm text-decoration-none text-dark">
+                    <img src="{% static 'esteticos.png' %}" class="card-img-top p-3" alt="Icono de tratamientos estéticos">
+                    <div class="card-body">
+                        <h5 class="card-title">Estéticos</h5>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-6 col-md-3 mb-4">
+                <a href="{% url 'tratamientos_corporales' %}" class="card h-100 shadow-sm text-decoration-none text-dark">
+                    <img src="{% static 'corporales.png' %}" class="card-img-top p-3" alt="Icono de tratamientos corporales">
+                    <div class="card-body">
+                        <h5 class="card-title">Corporales</h5>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-6 col-md-3 mb-4">
+                <a href="{% url 'cosmeticos' %}" class="card h-100 shadow-sm text-decoration-none text-dark">
+                    <img src="{% static 'cosmeticos.png' %}" class="card-img-top p-3" alt="Icono de tratamientos cosméticos">
+                    <div class="card-body">
+                        <h5 class="card-title">Cosméticos</h5>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-6 col-md-3 mb-4">
+                <a href="{% url 'depilaciones' %}" class="card h-100 shadow-sm text-decoration-none text-dark">
+                    <img src="{% static 'depilaciones.png' %}" class="card-img-top p-3" alt="Icono de depilaciones">
+                    <div class="card-body">
+                        <h5 class="card-title">Depilaciones</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="seguridad bg-light p-4 p-md-5 rounded text-center mt-4">
+        <h2>Seguridad en la Atención</h2>
+        <p class="lead">Hemos dispuesto diversos protocolos para mantener tu seguridad en nuestra instalación.</p>
+    </section>
+{% endblock %}
